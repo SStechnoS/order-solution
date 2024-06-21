@@ -106,7 +106,13 @@ public class SecurityConfig {
                 .roles("USER")
                 .build();
 
-        return new InMemoryUserDetailsManager(userDetails);
+        UserDetails userDetails2 = User.withDefaultPasswordEncoder()
+                .username("arsenii@gmail.com")
+                .password("password")
+                .roles("USER")
+                .build();
+
+        return new InMemoryUserDetailsManager(userDetails, userDetails2);
     }
 
     @Bean
@@ -115,7 +121,7 @@ public class SecurityConfig {
                 .clientId("oidc-client")
                 .clientAuthenticationMethod(NONE)
                 .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
-                .redirectUri("http://localhost:5174/")
+                .redirectUri("http://localhost:6868/")
                 .clientSettings(ClientSettings.builder().requireAuthorizationConsent(false).requireProofKey(true).build())
                 .build();
 

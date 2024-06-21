@@ -27,6 +27,7 @@ public class OrderSolutionService {
                 .firstName(request.getFirstName())
                 .lastName(request.getLastName())
                 .build();
+                
         customerRepository.save(customer);
     }
 }

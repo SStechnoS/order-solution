@@ -33,4 +33,9 @@ public class TestSessionSecurityController {
         return "anonymous";
     }
 
+    @GetMapping()
+    public String redirectAfterLogin() {
+        return "Login successful";
+        }
+
 }
