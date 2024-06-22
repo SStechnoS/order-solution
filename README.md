@@ -6,3 +6,6 @@ docker build --build-arg JAR_FILE=build/libs/order-solution-0.0.1.jar -t ostapen
 
 ### To run application 
 docker compose up
+
+### To connect to db
+psql -U order-solution

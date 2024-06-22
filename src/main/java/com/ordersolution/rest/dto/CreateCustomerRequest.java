@@ -1,4 +1,4 @@
-package com.ordersolution.rest;
+package com.ordersolution.rest.dto;
 
 import lombok.Data;
 

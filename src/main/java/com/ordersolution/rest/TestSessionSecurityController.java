@@ -36,6 +36,6 @@ public class TestSessionSecurityController {
     @GetMapping()
     public String redirectAfterLogin() {
         return "Login successful";
-        }
+    }
 
 }

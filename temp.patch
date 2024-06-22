@@ -1,0 +1,605 @@
+Subject: [PATCH] temp
+---
+Index: README.md
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/README.md b/README.md
+--- a/README.md	(revision b503aabcebb67eefe482fb5f32c0719b840eca14)
++++ b/README.md	(date 1718990256164)
+@@ -5,4 +5,7 @@
+ docker build --build-arg JAR_FILE=build/libs/order-solution-0.0.1.jar -t ostapenko/order-solution .
+ 
+ ### To run application 
+-docker compose up
+\ No newline at end of file
++docker compose up
++
++### To connect to db
++psql -U order-solution
+\ No newline at end of file
+Index: order-solution.postman_collection.json
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/order-solution.postman_collection.json b/order-solution.postman_collection.json
+--- a/order-solution.postman_collection.json	(revision b503aabcebb67eefe482fb5f32c0719b840eca14)
++++ b/order-solution.postman_collection.json	(date 1718993196830)
+@@ -7,6 +7,54 @@
+ 	},
+ 	"item": [
+ 		{
++			"name": "login",
++			"event": [
++				{
++					"listen": "test",
++					"script": {
++						"exec": [
++							"//const JSESSIONID = pm.response.headers.all().find(header => header.name === 'JSESSIONID');\r",
++							"//pm.environment.set(\"JSESSIONID\", JSESSIONID);"
++						],
++						"type": "text/javascript",
++						"packages": {}
++					}
++				}
++			],
++			"request": {
++				"auth": {
++					"type": "noauth"
++				},
++				"method": "POST",
++				"header": [],
++				"body": {
++					"mode": "formdata",
++					"formdata": [
++						{
++							"key": "username",
++							"value": "user@example.com",
++							"type": "text"
++						},
++						{
++							"key": "password",
++							"value": "password",
++							"type": "text"
++						}
++					]
++				},
++				"url": {
++					"raw": "{{baseUrl}}/login",
++					"host": [
++						"{{baseUrl}}"
++					],
++					"path": [
++						"login"
++					]
++				}
++			},
++			"response": []
++		},
++		{
+ 			"name": "customers",
+ 			"request": {
+ 				"method": "GET",
+@@ -29,19 +77,13 @@
+ 				"method": "POST",
+ 				"header": [],
+ 				"body": {
+-					"mode": "formdata",
+-					"formdata": [
+-						{
+-							"key": "firstName",
+-							"value": "Arsenii",
+-							"type": "text"
+-						},
+-						{
+-							"key": "lastName",
+-							"value": "Ostapenko",
+-							"type": "text"
++					"mode": "raw",
++					"raw": "{\r\n    \"firstName\": \"Max\",\r\n    \"lastName\": \"Rage\"\r\n}",
++					"options": {
++						"raw": {
++							"language": "json"
+ 						}
+-					]
++					}
+ 				},
+ 				"url": {
+ 					"raw": "{{baseUrl}}/customers",
+@@ -56,35 +98,82 @@
+ 			"response": []
+ 		},
+ 		{
+-			"name": "test-protected",
++			"name": "customer's orders",
++			"request": {
++				"method": "GET",
++				"header": [],
++				"url": {
++					"raw": "{{baseUrl}}/customers/1/orders",
++					"host": [
++						"{{baseUrl}}"
++					],
++					"path": [
++						"customers",
++						"1",
++						"orders"
++					]
++				}
++			},
++			"response": []
++		},
++		{
++			"name": "customer's orders",
++			"request": {
++				"method": "POST",
++				"header": [],
++				"body": {
++					"mode": "raw",
++					"raw": "{\r\n    \"orderSum\": 200,\r\n    \"customerId\": 1\r\n}",
++					"options": {
++						"raw": {
++							"language": "json"
++						}
++					}
++				},
++				"url": {
++					"raw": "{{baseUrl}}/customers/1/orders",
++					"host": [
++						"{{baseUrl}}"
++					],
++					"path": [
++						"customers",
++						"1",
++						"orders"
++					]
++				}
++			},
++			"response": []
++		},
++		{
++			"name": "customer's discount",
+ 			"request": {
+ 				"method": "GET",
+ 				"header": [],
+ 				"url": {
+-					"raw": "{{baseUrl}}/test/protected",
++					"raw": "{{baseUrl}}/customers/1/discount",
+ 					"host": [
+ 						"{{baseUrl}}"
+ 					],
+ 					"path": [
+-						"test",
+-						"protected"
++						"customers",
++						"1",
++						"discount"
+ 					]
+ 				}
+ 			},
+ 			"response": []
+ 		},
+ 		{
+-			"name": "test-protected-api",
++			"name": "test-protected",
+ 			"request": {
+ 				"method": "GET",
+ 				"header": [],
+ 				"url": {
+-					"raw": "{{baseUrl}}/api/test/protected",
++					"raw": "{{baseUrl}}/test/protected",
+ 					"host": [
+ 						"{{baseUrl}}"
+ 					],
+ 					"path": [
+-						"api",
+ 						"test",
+ 						"protected"
+ 					]
+@@ -93,48 +182,19 @@
+ 			"response": []
+ 		},
+ 		{
+-			"name": "login",
+-			"event": [
+-				{
+-					"listen": "test",
+-					"script": {
+-						"exec": [
+-							"const JSESSIONID = pm.response.headers.all().find(header => header.name === 'JSESSIONID');\r",
+-							"pm.environment.set(\"JSESSIONID\", JSESSIONID);"
+-						],
+-						"type": "text/javascript",
+-						"packages": {}
+-					}
+-				}
+-			],
++			"name": "test-protected-api",
+ 			"request": {
+-				"auth": {
+-					"type": "noauth"
+-				},
+-				"method": "POST",
++				"method": "GET",
+ 				"header": [],
+-				"body": {
+-					"mode": "formdata",
+-					"formdata": [
+-						{
+-							"key": "username",
+-							"value": "user@example.com",
+-							"type": "text"
+-						},
+-						{
+-							"key": "password",
+-							"value": "password",
+-							"type": "text"
+-						}
+-					]
+-				},
+ 				"url": {
+-					"raw": "{{baseUrl}}/login",
++					"raw": "{{baseUrl}}/api/test/protected",
+ 					"host": [
+ 						"{{baseUrl}}"
+ 					],
+ 					"path": [
+-						"login"
++						"api",
++						"test",
++						"protected"
+ 					]
+ 				}
+ 			},
+Index: src/main/java/com/ordersolution/OrderSolutionApplication.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/ordersolution/OrderSolutionApplication.java b/src/main/java/com/ordersolution/OrderSolutionApplication.java
+--- a/src/main/java/com/ordersolution/OrderSolutionApplication.java	(revision b503aabcebb67eefe482fb5f32c0719b840eca14)
++++ b/src/main/java/com/ordersolution/OrderSolutionApplication.java	(date 1718993310442)
+@@ -2,8 +2,10 @@
+ 
+ import org.springframework.boot.SpringApplication;
+ import org.springframework.boot.autoconfigure.SpringBootApplication;
++import org.springframework.data.jdbc.repository.config.EnableJdbcAuditing;
+ 
+ @SpringBootApplication
++@EnableJdbcAuditing
+ public class OrderSolutionApplication {
+ 
+     public static void main(String[] args) {
+Index: src/main/java/com/ordersolution/model/CustomerOrder.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/ordersolution/model/CustomerOrder.java b/src/main/java/com/ordersolution/model/CustomerOrder.java
+new file mode 100644
+--- /dev/null	(date 1718992465150)
++++ b/src/main/java/com/ordersolution/model/CustomerOrder.java	(date 1718992465150)
+@@ -0,0 +1,33 @@
++package com.ordersolution.model;
++
++import jakarta.persistence.Column;
++import jakarta.persistence.Entity;
++import jakarta.persistence.GeneratedValue;
++import jakarta.persistence.GenerationType;
++import lombok.Builder;
++import lombok.Data;
++import org.springframework.data.annotation.CreatedDate;
++import org.springframework.data.annotation.Id;
++import org.springframework.data.relational.core.mapping.Table;
++
++import java.math.BigDecimal;
++import java.time.Instant;
++
++@Entity
++@Table(name = "customer_order")
++@Data
++@Builder
++public class CustomerOrder {
++
++    @Id
++    @GeneratedValue(strategy = GenerationType.IDENTITY)
++    private Long id;
++
++    private BigDecimal orderSum;
++
++    private Long customerId;
++
++    @Column(updatable = false)
++    @CreatedDate
++    private Instant timeCreated;
++}
+\ No newline at end of file
+Index: init.sql
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/init.sql b/init.sql
+--- a/init.sql	(revision b503aabcebb67eefe482fb5f32c0719b840eca14)
++++ b/init.sql	(date 1718991210515)
+@@ -7,6 +7,24 @@
+  UNIQUE (first_name, last_name)
+ );
+ 
++CREATE TABLE customer_order
++(
++ id SERIAL NOT NULL,
++ order_sum decimal NOT NULL,
++ customer_id integer NOT NULL,
++ time_created timestamp NOT NULL,
++ PRIMARY KEY (id),
++ FOREIGN KEY(customer_id)
++ REFERENCES customer(id)
++);
++
+ INSERT INTO customer (first_name, last_name)
+ VALUES ('Arsenii', 'Ostapenko'),
+-('Alice', 'Beckham');
+\ No newline at end of file
++('Alice', 'Beckham');
++
++INSERT INTO customer_order (order_sum, customer_id, time_created)
++VALUES (150, 1, '2024-02-13 08:05:00'),
++(350, 1, '2024-04-07 12:00:00'),
++(500, 1, '2024-07-30 10:45:00'),
++(500, 2, '2024-05-07 07:34:00')
++;
+\ No newline at end of file
+Index: src/main/java/com/ordersolution/repository/CustomerOrderRepository.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/ordersolution/repository/CustomerOrderRepository.java b/src/main/java/com/ordersolution/repository/CustomerOrderRepository.java
+new file mode 100644
+--- /dev/null	(date 1718991210486)
++++ b/src/main/java/com/ordersolution/repository/CustomerOrderRepository.java	(date 1718991210486)
+@@ -0,0 +1,13 @@
++package com.ordersolution.repository;
++
++import com.ordersolution.model.CustomerOrder;
++import org.springframework.data.repository.ListCrudRepository;
++import org.springframework.stereotype.Repository;
++
++import java.util.List;
++
++@Repository
++public interface CustomerOrderRepository extends ListCrudRepository<CustomerOrder, Long> {
++
++    List<CustomerOrder> findAllByCustomerId(Long customerId);
++}
+Index: src/main/java/com/ordersolution/service/OrderSolutionService.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/ordersolution/service/OrderSolutionService.java b/src/main/java/com/ordersolution/service/OrderSolutionService.java
+--- a/src/main/java/com/ordersolution/service/OrderSolutionService.java	(revision b503aabcebb67eefe482fb5f32c0719b840eca14)
++++ b/src/main/java/com/ordersolution/service/OrderSolutionService.java	(date 1718993310433)
+@@ -1,25 +1,30 @@
+ package com.ordersolution.service;
+ 
+ import com.ordersolution.model.Customer;
++import com.ordersolution.model.CustomerOrder;
++import com.ordersolution.repository.CustomerOrderRepository;
+ import com.ordersolution.repository.CustomerRepository;
+-import com.ordersolution.rest.CreateCustomerRequest;
++import com.ordersolution.rest.dto.CreateCustomerRequest;
++import com.ordersolution.rest.dto.CreateOrderRequest;
+ import lombok.AllArgsConstructor;
+ import org.springframework.stereotype.Service;
+ 
+-import java.util.Iterator;
++import java.math.BigDecimal;
+ import java.util.List;
++import java.util.Optional;
+ 
+ @Service
+ @AllArgsConstructor
+ public class OrderSolutionService {
+ 
+     private final CustomerRepository customerRepository;
++    private final CustomerOrderRepository customerOrderRepository;
+ 
+     public List<Customer> getAllCustomers() {
+         return customerRepository.findAll();
+     }
+ 
+-    public void createCustomer(CreateCustomerRequest request) {
++    public Customer createCustomer(CreateCustomerRequest request) {
+         if (request == null) {
+             throw new IllegalArgumentException("Request is empty");
+         }
+@@ -27,7 +32,54 @@
+                 .firstName(request.getFirstName())
+                 .lastName(request.getLastName())
+                 .build();
+-                
+-        customerRepository.save(customer);
++
++        return customerRepository.save(customer);
++    }
++
++    public CustomerOrder addOrder(CreateOrderRequest orderRequest) {
++        if (orderRequest == null) {
++            throw new IllegalArgumentException("Request is empty");
++        }
++        // check that customer exists
++        Optional<Customer> optionalCustomer = customerRepository.findById(orderRequest.getCustomerId());
++        if (optionalCustomer.isEmpty()) {
++            throw new IllegalArgumentException("No such customer");
++        }
++        CustomerOrder order = CustomerOrder.builder()
++                .customerId(orderRequest.getCustomerId())
++                .orderSum(orderRequest.getOrderSum())
++                .build();
++        return customerOrderRepository.save(order);
++    }
++
++    public List<CustomerOrder> getAllCustomerOrders(Long customerId) {
++        return customerOrderRepository.findAllByCustomerId(customerId);
+     }
++
++    public Long getCustomerDiscount(Long customerId) {
++        // check that customer exists
++        Optional<Customer> optionalCustomer = customerRepository.findById(customerId);
++        if (optionalCustomer.isEmpty()) {
++            throw new IllegalArgumentException("No such customer");
++        }
++        List<CustomerOrder> allOrders = customerOrderRepository.findAllByCustomerId(customerId);
++        if (allOrders.isEmpty()) {
++            // no discount
++            return 0L;
++        }
++        BigDecimal sumOfOrders = BigDecimal.ZERO;
++        for (CustomerOrder order : allOrders) {
++            sumOfOrders = sumOfOrders.add(order.getOrderSum());
++        }
++        // more than 500 = 5%
++        if (sumOfOrders.compareTo(BigDecimal.valueOf(500L)) >= 0) {
++            return 5L;
++        }
++        // more than 1000 = 10%
++        if (sumOfOrders.compareTo(BigDecimal.valueOf(1000L)) >= 0) {
++            return 10L;
++        }
++        return 0L;
++    }
++
+ }
+Index: src/main/java/com/ordersolution/rest/dto/CreateOrderRequest.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/ordersolution/rest/dto/CreateOrderRequest.java b/src/main/java/com/ordersolution/rest/dto/CreateOrderRequest.java
+new file mode 100644
+--- /dev/null	(date 1718988388560)
++++ b/src/main/java/com/ordersolution/rest/dto/CreateOrderRequest.java	(date 1718988388560)
+@@ -0,0 +1,13 @@
++package com.ordersolution.rest.dto;
++
++import lombok.Data;
++
++import java.math.BigDecimal;
++
++@Data
++public class CreateOrderRequest {
++
++    private BigDecimal orderSum;
++
++    private Long customerId;
++}
+\ No newline at end of file
+Index: src/main/java/com/ordersolution/rest/TestSessionSecurityController.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/ordersolution/rest/TestSessionSecurityController.java b/src/main/java/com/ordersolution/rest/TestSessionSecurityController.java
+--- a/src/main/java/com/ordersolution/rest/TestSessionSecurityController.java	(revision b503aabcebb67eefe482fb5f32c0719b840eca14)
++++ b/src/main/java/com/ordersolution/rest/TestSessionSecurityController.java	(date 1718993310450)
+@@ -36,6 +36,6 @@
+     @GetMapping()
+     public String redirectAfterLogin() {
+         return "Login successful";
+-        }
++    }
+ 
+ }
+Index: src/main/java/com/ordersolution/rest/CreateCustomerRequest.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/ordersolution/rest/CreateCustomerRequest.java b/src/main/java/com/ordersolution/rest/dto/CreateCustomerRequest.java
+rename from src/main/java/com/ordersolution/rest/CreateCustomerRequest.java
+rename to src/main/java/com/ordersolution/rest/dto/CreateCustomerRequest.java
+--- a/src/main/java/com/ordersolution/rest/CreateCustomerRequest.java	(revision b503aabcebb67eefe482fb5f32c0719b840eca14)
++++ b/src/main/java/com/ordersolution/rest/dto/CreateCustomerRequest.java	(date 1718986880503)
+@@ -1,4 +1,4 @@
+-package com.ordersolution.rest;
++package com.ordersolution.rest.dto;
+ 
+ import lombok.Data;
+ 
+Index: src/main/java/com/ordersolution/rest/OrderSolutionController.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/ordersolution/rest/OrderSolutionController.java b/src/main/java/com/ordersolution/rest/OrderSolutionController.java
+--- a/src/main/java/com/ordersolution/rest/OrderSolutionController.java	(revision b503aabcebb67eefe482fb5f32c0719b840eca14)
++++ b/src/main/java/com/ordersolution/rest/OrderSolutionController.java	(date 1718991691985)
+@@ -1,12 +1,16 @@
+ package com.ordersolution.rest;
+ 
+ import com.ordersolution.model.Customer;
++import com.ordersolution.model.CustomerOrder;
++import com.ordersolution.rest.dto.CreateCustomerRequest;
++import com.ordersolution.rest.dto.CreateOrderRequest;
+ import com.ordersolution.service.OrderSolutionService;
+ import lombok.AllArgsConstructor;
+ import org.apache.commons.lang3.StringUtils;
+ import org.springframework.http.ResponseEntity;
+ import org.springframework.web.bind.annotation.*;
+ 
++import java.math.BigDecimal;
+ import java.util.List;
+ 
+ @RestController
+@@ -24,14 +28,44 @@
+     }
+ 
+     @PostMapping
+-    public ResponseEntity<CreateCustomerRequest> createCustomer(
++    public ResponseEntity<Customer> createCustomer(
+             @RequestBody CreateCustomerRequest request) {
+         if (request == null
+                 || StringUtils.isBlank(request.getFirstName())
+                 || StringUtils.isBlank(request.getLastName())) {
+             return ResponseEntity.badRequest().build();
+         }
+-        orderSolutionService.createCustomer(request);
+-        return ResponseEntity.ok(request);
++        Customer customer = orderSolutionService.createCustomer(request);
++        return ResponseEntity.ok(customer);
++    }
++
++    @GetMapping("/{customerId}/orders")
++    public ResponseEntity<List<CustomerOrder>> getAllCustomerOrders(
++            @PathVariable Long customerId
++    ) {
++        List<CustomerOrder> allCustomerOrders = orderSolutionService.getAllCustomerOrders(customerId);
++        return ResponseEntity.ok(allCustomerOrders);
++    }
++
++    @PostMapping("/{customerId}/orders")
++    public ResponseEntity<CustomerOrder> createCustomerOrder(
++            @PathVariable Long customerId,
++            @RequestBody CreateOrderRequest request) {
++        if (request == null
++                || request.getCustomerId() == null
++                || request.getOrderSum() == null
++                || request.getOrderSum().compareTo(BigDecimal.ZERO) <= 0
++                || !customerId.equals(request.getCustomerId())) {
++            return ResponseEntity.badRequest().build();
++        }
++        CustomerOrder order = orderSolutionService.addOrder(request);
++        return ResponseEntity.ok(order);
++    }
++
++    @GetMapping("/{customerId}/discount")
++    public ResponseEntity<Long> customerDiscount(
++            @PathVariable Long customerId) {
++        Long discount = orderSolutionService.getCustomerDiscount(customerId);
++        return ResponseEntity.ok(discount);
+     }
+ }
